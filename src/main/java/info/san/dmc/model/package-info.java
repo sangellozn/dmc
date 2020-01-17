@@ -1,10 +1,7 @@
-package info.san.dmc;
-
-import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
-
 /**
- *
+ * Model classes.
+ */
+/**
  * MIT License
  *
  * Copyright (c) 2016 sangellozn
@@ -29,17 +26,6 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
  * SOFTWARE.
  */
 /**
- * Initializer for webapp deployment.
- *
  * @author ANGELLOZ-NICOUD Sébastien
  */
-public class ServletInitializer extends SpringBootServletInitializer {
-
-	@Override
-	protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
-		return application.sources(DmcApplication.class);
-	}
-
-
-
-}
+package info.san.dmc.model;

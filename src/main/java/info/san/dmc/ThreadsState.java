@@ -1,8 +1,5 @@
 package info.san.dmc;
 
-import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
-
 /**
  *
  * MIT License
@@ -29,17 +26,27 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
  * SOFTWARE.
  */
 /**
- * Initializer for webapp deployment.
+ * Threads state.
  *
  * @author ANGELLOZ-NICOUD Sébastien
  */
-public class ServletInitializer extends SpringBootServletInitializer {
+public enum ThreadsState {
 
-	@Override
-	protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
-		return application.sources(DmcApplication.class);
-	}
-
-
+    /**
+     * No thread.
+     */
+    NONE,
+    /**
+     * Low level.
+     */
+    LOW,
+    /**
+     * Medium level.
+     */
+    MED,
+    /**
+     * Full or nearly full.
+     */
+    FULL
 
 }
