@@ -15,7 +15,28 @@
 	margin-bottom: 25px;
 }
 
-#search-center {
+#search-center, #prepare-command {
     padding: 5px;
     margin-bottom: 15px;	
+}
+
+#data-content {
+	margin-bottom: 30px;
+}
+
+#command-content {
+	display: none;
+}
+
+#command-input {
+	margin-bottom: 10px;
+}
+
+#command-content textarea {
+	margin-top: 20px;
+	margin-bottom: 20px;
+}
+
+#command-result {
+	display: none;
 }

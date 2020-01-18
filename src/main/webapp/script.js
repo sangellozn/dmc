@@ -10,6 +10,36 @@ $(function() {
 		$('[id^=threads-row-]').css('display', 'none');
 		$('[id^=threads-row-' + val + ']').css('display', 'flex');
 	});
+	
+	$('#command-link').click(function() {
+		$('#command-content').toggle();
+	});
+	
+	$('#search-value').focus();
+	
+	$('#command-button').click(function() {
+		var threads = $('#command-value').val().split(',');
+		var result = '';
+		for (var threadCode of threads) {
+			var level = $('#threads-state-' + threadCode.toLowerCase()).val();
+			var stock = $('#threads-nb-' + threadCode.toLowerCase()).val();
+			
+			if (level !== undefined && stock !== undefined) {
+				if (level !== 'FULL' && level !== 'MED' && +stock === 0) {
+					result += threadCode + ', ';
+				}
+			}
+		}
+		
+		if (!result) {
+			result = 'Stock suffisant';
+		} else {
+			result = result.substring(0, result.length - 2);
+		}
+		
+		$('#command-result-threads').text(result);
+		$('#command-result').css('display', 'block');
+	});
 });
 
 var buildThreadsHtml = function(idx, item) {
@@ -47,7 +77,7 @@ var buildNbThreadsInput = function(item) {
 	
 	var input = $('<input></input>', {
 		'type': 'number',
-		'id': 'threads-nb-' + item.code,
+		'id': 'threads-nb-' + item.code.toLowerCase(),
 		'value': item.nbThreads,
 		'min': 0,
 		'class': 'form-control'
@@ -63,6 +93,9 @@ var buildNbThreadsInput = function(item) {
 				code: item.code,
 				nbThreads: this.value
 			}),
+			error: function() {
+				alert('Une erreur est survenue à l\'enregistrement');
+			},
 			contentType: 'application/json'
 		});
 	});
@@ -76,24 +109,24 @@ var buildThreadsStateList = function(item) {
 	});
 	
 	var select = $('<select></select>', {
-		'id': 'threads-state-' + item.code,
-		'name': 'threads-' + item.code,
+		'id': 'threads-state-' + item.code.toLowerCase(),
+		'name': 'threads-' + item.code.toLowerCase(),
 		'class': 'form-control'
 	});
 	
-	var optNone = $('<option value="NONE">None</option>', {
+	var optNone = $('<option value="NONE">Aucun</option>', {
 		'class': 'threads-state state-none'
 	});
 	
-	var optLow = $('<option value="LOW">Low</option>', {
+	var optLow = $('<option value="LOW">Bas</option>', {
 		'class': 'threads-state state-low'
 	});
 	
-	var optMed = $('<option value="MED">Medium</option>', {
+	var optMed = $('<option value="MED">Moyen</option>', {
 		'class': 'threads-state state-med'
 	});
 	
-	var optFull = $('<option value="FULL">Full</option>', {
+	var optFull = $('<option value="FULL">Complet</option>', {
 		'class': 'threads-state state-full'
 	});
 	
@@ -127,6 +160,9 @@ var buildThreadsStateList = function(item) {
 				code: item.code,
 				state: this.value
 			}),
+			error: function() {
+				alert('Une erreur est survenue à l\'enregistrement');
+			},
 			contentType: 'application/json'
 		});
 	});
