@@ -19,6 +19,13 @@ $(function() {
 	
 	$('#command-button').click(function() {
 		var threads = $('#command-value').val().split(',');
+		threads = Array.from(new Set(threads));
+		threads.sort(function(left, right) {
+			if (isNaN(left) || isNaN(right)) {
+				return left.localeCompare(right);
+			}
+			return +left - +right;
+		});
 		var result = '';
 		for (var threadCode of threads) {
 			var level = $('#threads-state-' + threadCode.toLowerCase()).val();
