@@ -1,13 +1,13 @@
-.threads {
+.skeins {
 	padding: 2px;
 	border-bottom: 1px solid #f1f1f1f1;
 }
 
-.threads.odd {
+.skeins.odd {
 	background-color: #fafafa;
 }
 
-.threads:hover {
+.skeins:hover {
     background-color: #f8f8f8;
 }
 

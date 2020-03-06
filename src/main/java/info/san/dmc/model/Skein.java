@@ -1,7 +1,8 @@
 package info.san.dmc.model;
 
+import info.san.dmc.SkeinState;
+
 /**
- *
  * MIT License
  *
  * Copyright (c) 2016 sangellozn
@@ -26,15 +27,17 @@ package info.san.dmc.model;
  * SOFTWARE.
  */
 /**
- * Threads state for save.
+ * Thread object.
  *
  * @author ANGELLOZ-NICOUD Sébastien
  */
-public class ThreadsState {
+public class Skein {
 
     private String code;
-    private info.san.dmc.ThreadsState state;
-    private Long nbThreads;
+    private String name;
+    private String color;
+    private SkeinState state;
+    private Long nb;
 
     /**
      * @return the code
@@ -52,9 +55,39 @@ public class ThreadsState {
     }
 
     /**
+     * @return the name
+     */
+    public String getName() {
+        return this.name;
+    }
+
+    /**
+     * @param name
+     *            the name to set
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    /**
+     * @return the color
+     */
+    public String getColor() {
+        return this.color;
+    }
+
+    /**
+     * @param color
+     *            the color to set
+     */
+    public void setColor(String color) {
+        this.color = color;
+    }
+
+    /**
      * @return the state
      */
-    public info.san.dmc.ThreadsState getState() {
+    public SkeinState getState() {
         return this.state;
     }
 
@@ -62,22 +95,53 @@ public class ThreadsState {
      * @param state
      *            the state to set
      */
-    public void setState(info.san.dmc.ThreadsState state) {
+    public void setState(SkeinState state) {
         this.state = state;
     }
 
     /**
      * @return the nbThreads
      */
-    public Long getNbThreads() {
-        return this.nbThreads;
+    public Long getNb() {
+        return this.nb;
     }
 
     /**
-     * @param nbThreads the nbThreads to set
+     * @param nb
+     *            the nb to set
      */
-    public void setNbThreads(Long nbThreads) {
-        this.nbThreads = nbThreads;
+    public void setNb(Long nb) {
+        this.nb = nb;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((this.code == null) ? 0 : this.code.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (this.getClass() != obj.getClass()) {
+            return false;
+        }
+        Skein other = (Skein) obj;
+        if (this.code == null) {
+            if (other.code != null) {
+                return false;
+            }
+        } else if (!this.code.equals(other.code)) {
+            return false;
+        }
+        return true;
     }
 
 }

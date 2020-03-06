@@ -24,8 +24,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import info.san.dmc.model.Threads;
-import info.san.dmc.model.ThreadsState;
+import info.san.dmc.model.Skein;
+import info.san.dmc.model.SkeinState;
 
 /**
  * MIT License
@@ -64,17 +64,17 @@ public class MainController {
      * @return the content.
      */
     @RequestMapping("/data")
-    public List<Threads> main() {
+    public List<Skein> main() {
         return this.loadData();
     }
 
-    private List<Threads> loadData() {
+    private List<Skein> loadData() {
         try {
             File dataFile = this.getFile();
 
             ObjectMapper objectMapper = new ObjectMapper();
             String dataJson = FileUtils.readFileToString(dataFile, StandardCharsets.UTF_8);
-            List<Threads> result = objectMapper.readValue(dataJson, new TypeReference<List<Threads>>(){});
+            List<Skein> result = objectMapper.readValue(dataJson, new TypeReference<List<Skein>>(){});
             Collections.sort(result, (left, right) -> {
                 String leftCode = left.getCode();
                 String rightCode = right.getCode();
@@ -110,11 +110,11 @@ public class MainController {
      * @param state the state of the threads.
      */
     @PostMapping("/data/state")
-    public void saveState(@RequestBody ThreadsState state) {
-        List<Threads> data = this.loadData();
+    public void saveState(@RequestBody SkeinState state) {
+        List<Skein> data = this.loadData();
 
         try {
-            Optional<Threads> threads = data.stream().filter(item -> item.getCode().equals(state.getCode())).findFirst();
+            Optional<Skein> threads = data.stream().filter(item -> item.getCode().equals(state.getCode())).findFirst();
             if (threads.isPresent()) {
                 threads.get().setState(state.getState());
                 File dataFile = this.getFile();
@@ -132,13 +132,13 @@ public class MainController {
      * @param state the state of the threads.
      */
     @PostMapping("/data/nb")
-    public void saveNb(@RequestBody ThreadsState state) {
-        List<Threads> data = this.loadData();
+    public void saveNb(@RequestBody SkeinState state) {
+        List<Skein> data = this.loadData();
 
         try {
-            Optional<Threads> threads = data.stream().filter(item -> item.getCode().equals(state.getCode())).findFirst();
+            Optional<Skein> threads = data.stream().filter(item -> item.getCode().equals(state.getCode())).findFirst();
             if (threads.isPresent()) {
-                threads.get().setNbThreads(state.getNbThreads());
+                threads.get().setNb(state.getNb());
                 File dataFile = this.getFile();
                 ObjectMapper objectMapper = new ObjectMapper();
                 objectMapper.writeValue(dataFile, data);

@@ -30,10 +30,10 @@ package info.san.dmc;
  *
  * @author ANGELLOZ-NICOUD Sébastien
  */
-public enum ThreadsState {
+public enum SkeinState {
 
     /**
-     * No thread.
+     * No skein.
      */
     NONE,
     /**

@@ -1,14 +1,14 @@
 $(function() {
 	$.get('api/data', function(data) {
 		$(data).each(function(idx, item) {
-			$('#data-content').append(buildThreadsHtml(idx, item));
+			$('#data-content').append(buildSkeinsHtml(idx, item));
 		});
 	});
 	
 	$('#search-value').keyup(function() {
 		var val = this.value;
-		$('[id^=threads-row-]').css('display', 'none');
-		$('[id^=threads-row-' + val + ']').css('display', 'flex');
+		$('[id^=skeins-row-]').css('display', 'none');
+		$('[id^=skeins-row-' + val + ']').css('display', 'flex');
 	});
 	
 	$('#command-link').click(function() {
@@ -18,74 +18,80 @@ $(function() {
 	$('#search-value').focus();
 	
 	$('#command-button').click(function() {
-		var threads = $('#command-value').val().split(',');
-		threads = Array.from(new Set(threads));
-		threads.sort(function(left, right) {
-			if (isNaN(left) || isNaN(right)) {
-				return left.localeCompare(right);
-			}
-			return +left - +right;
-		});
-		var result = '';
-		for (var threadCode of threads) {
-			var level = $('#threads-state-' + threadCode.toLowerCase()).val();
-			var stock = $('#threads-nb-' + threadCode.toLowerCase()).val();
-			
-			if (level !== undefined && stock !== undefined) {
-				if (level !== 'FULL' && level !== 'MED' && +stock === 0) {
-					result += threadCode + ', ';
+		var result = 'Veillez saisir les codes DMC séparés par des virgules.';
+		if ($('#command-value').val()) {
+			var skeins = $('#command-value').val().split(',');
+			skeins = Array.from(new Set(skeins));
+			skeins.sort(function(left, right) {
+				if (isNaN(left) || isNaN(right)) {
+					return left.localeCompare(right);
+				}
+				return +left - +right;
+			});
+			for (var skeinCode of skeins) {
+				var level = $('#skeins-state-' + skeinCode.toLowerCase()).val();
+				var stock = $('#skeins-nb-' + skeinCode.toLowerCase()).val();
+				
+				if (level !== undefined && stock !== undefined) {
+					if (level !== 'FULL' && level !== 'MED' && +stock === 0) {
+						result += skeinCode + ', ';
+					}
+				} else {
+					result += '!! ' + skeinCode + ' inconnu !!,';
 				}
 			}
-		}
-		
-		if (!result) {
-			result = 'Stock suffisant';
+			
+			if (!result) {
+				result = 'Stock suffisant';
+			} else {
+				result = result.substring(0, result.length - 2);
+			}
+			
 		} else {
-			result = result.substring(0, result.length - 2);
+			
 		}
-		
-		$('#command-result-threads').text(result);
+		$('#command-result-skeins').text(result);
 		$('#command-result').css('display', 'block');
 	});
 });
 
-var buildThreadsHtml = function(idx, item) {
+var buildSkeinsHtml = function(idx, item) {
 	var div = $('<div></div>', {
-		'class': 'threads row ' + (idx % 2 === 0 ? 'even' : 'odd'),
-		'id': 'threads-row-' + item.code.toLowerCase()
+		'class': 'skeins row ' + (idx % 2 === 0 ? 'even' : 'odd'),
+		'id': 'skeins-row-' + item.code.toLowerCase()
 	});
 	
 	var code = $('<div></div>', {
-		'class': 'threads-code col'
+		'class': 'skeins-code col'
 	}).text(item.code);
 	
 	var name = $('<div></div>', {
-		'class': 'threads-name col'
+		'class': 'skeins-name col'
 	}).text(item.name);
 	
 	var color = $('<div></div>', {
-		'class': 'threads-color col',
+		'class': 'skeins-color col',
 		'style': 'background-color: #' + item.color
 	});
 	
 	div.append(code);
 	div.append(name);
 	div.append(color);
-	div.append(buildThreadsStateList(item));
-	div.append(buildNbThreadsInput(item));
+	div.append(buildSkeinsStateList(item));
+	div.append(buildNbSkeinsInput(item));
 	
 	return div;
 };
 
-var buildNbThreadsInput = function(item) {
+var buildNbSkeinsInput = function(item) {
 	var div = $('<div></div>', {
 		'class': 'col'
 	});
 	
 	var input = $('<input></input>', {
 		'type': 'number',
-		'id': 'threads-nb-' + item.code.toLowerCase(),
-		'value': item.nbThreads,
+		'id': 'skeins-nb-' + item.code.toLowerCase(),
+		'value': item.nb,
 		'min': 0,
 		'class': 'form-control'
 	});
@@ -98,7 +104,7 @@ var buildNbThreadsInput = function(item) {
 			url: 'api/data/nb', 
 			data: JSON.stringify({
 				code: item.code,
-				nbThreads: this.value
+				nb: this.value
 			}),
 			error: function() {
 				alert('Une erreur est survenue à l\'enregistrement');
@@ -110,31 +116,31 @@ var buildNbThreadsInput = function(item) {
 	return div;
 };
 
-var buildThreadsStateList = function(item) {
+var buildSkeinsStateList = function(item) {
 	var div = $('<div></div>', {
 		'class': 'col'
 	});
 	
 	var select = $('<select></select>', {
-		'id': 'threads-state-' + item.code.toLowerCase(),
-		'name': 'threads-' + item.code.toLowerCase(),
+		'id': 'skeins-state-' + item.code.toLowerCase(),
+		'name': 'skeins-' + item.code.toLowerCase(),
 		'class': 'form-control'
 	});
 	
 	var optNone = $('<option value="NONE">Aucun</option>', {
-		'class': 'threads-state state-none'
+		'class': 'skeins-state state-none'
 	});
 	
 	var optLow = $('<option value="LOW">Bas</option>', {
-		'class': 'threads-state state-low'
+		'class': 'skeins-state state-low'
 	});
 	
 	var optMed = $('<option value="MED">Moyen</option>', {
-		'class': 'threads-state state-med'
+		'class': 'skeins-state state-med'
 	});
 	
 	var optFull = $('<option value="FULL">Complet</option>', {
-		'class': 'threads-state state-full'
+		'class': 'skeins-state state-full'
 	});
 	
 	switch (item.state) {
