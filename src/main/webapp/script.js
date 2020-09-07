@@ -13,12 +13,15 @@ $(function() {
 	
 	$('#command-link').click(function() {
 		$('#command-content').toggle();
+		$('#command-value').val('');
+		$('#command-result-skeins').text('');
+		$('#command-result').css('display', 'none');
 	});
 	
 	$('#search-value').focus();
 	
 	$('#command-button').click(function() {
-		var result = 'Veillez saisir les codes DMC séparés par des virgules.';
+		var result = '';
 		if ($('#command-value').val()) {
 			var skeins = $('#command-value').val().split(',');
 			skeins = Array.from(new Set(skeins));
@@ -46,19 +49,43 @@ $(function() {
 			} else {
 				result = result.substring(0, result.length - 2);
 			}
-			
 		} else {
-			
+			result = 'Veillez saisir les codes DMC séparés par des virgules.';
 		}
 		$('#command-result-skeins').text(result);
 		$('#command-result').css('display', 'block');
+	});
+	
+	$(window).scroll(function () {
+		if ($(this).scrollTop() > 50) {
+			$('#back-to-top').fadeIn();
+		} else {
+			$('#back-to-top').fadeOut();
+		}
+	});
+	// scroll body to 0px on click
+	$('#back-to-top').click(function () {
+		$('body,html').animate({
+			scrollTop: 0
+		}, 400);
+		return false;
+	});
+	
+	$('#shortcut-bar li a').click(function() {
+		var val = $(this).data('val');
+		var pos = $('div[data-skein-val="' + val + '"').offset().top;
+		$('body,html').animate({
+			scrollTop: pos - 2
+		}, 400);
+		return false;
 	});
 });
 
 var buildSkeinsHtml = function(idx, item) {
 	var div = $('<div></div>', {
 		'class': 'skeins row ' + (idx % 2 === 0 ? 'even' : 'odd'),
-		'id': 'skeins-row-' + item.code.toLowerCase()
+		'id': 'skeins-row-' + item.code.toLowerCase(),
+		'data-skein-val': item.code.toLowerCase()
 	});
 	
 	var code = $('<div></div>', {
@@ -99,6 +126,7 @@ var buildNbSkeinsInput = function(item) {
 	div.append(input);
 	
 	input.change(function() {
+		input.prop('disabled', true);
 		$.ajax({
 			type: 'POST',
 			url: 'api/data/nb', 
@@ -106,6 +134,9 @@ var buildNbSkeinsInput = function(item) {
 				code: item.code,
 				nb: this.value
 			}),
+			complete: function() {
+				input.prop('disabled', false);
+			},
 			error: function() {
 				alert('Une erreur est survenue à l\'enregistrement');
 			},
@@ -166,6 +197,7 @@ var buildSkeinsStateList = function(item) {
 	select.append(optFull);
 	
 	select.change(function() {
+		select.prop('disabled', true);
 		$.ajax({
 			type: 'POST',
 			url: 'api/data/state', 
@@ -173,6 +205,9 @@ var buildSkeinsStateList = function(item) {
 				code: item.code,
 				state: this.value
 			}),
+			complete: function() {
+				select.prop('disabled', false);
+			},
 			error: function() {
 				alert('Une erreur est survenue à l\'enregistrement');
 			},
