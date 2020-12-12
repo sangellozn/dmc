@@ -6,9 +6,21 @@ $(function() {
 	});
 	
 	$('#search-value').keyup(function() {
-		var val = this.value;
-		$('[id^=skeins-row-]').css('display', 'none');
-		$('[id^=skeins-row-' + val + ']').css('display', 'flex');
+		const val = this.value;
+		if (val) {
+			const parts = val.split(/[,.]/);  
+			$('[id^=skeins-row-]').css('display', 'none');
+
+			parts.forEach(part => {
+				if (part) {
+					$('[id^=skeins-row-' + part + ']').css('display', 'flex');
+				}
+			});
+		} else {
+			$('[id^=skeins-row-]').css('display', 'flex');
+		}
+		
+		
 	});
 	
 	$('#command-link').click(function() {
@@ -75,7 +87,7 @@ $(function() {
 		var val = $(this).data('val');
 		var pos = $('div[data-skein-val="' + val + '"').offset().top;
 		$('body,html').animate({
-			scrollTop: pos - 2
+			scrollTop: pos - 40
 		}, 400);
 		return false;
 	});
@@ -83,7 +95,7 @@ $(function() {
 
 var buildSkeinsHtml = function(idx, item) {
 	var div = $('<div></div>', {
-		'class': 'skeins row ' + (idx % 2 === 0 ? 'even' : 'odd'),
+		'class': 'skeins row',
 		'id': 'skeins-row-' + item.code.toLowerCase(),
 		'data-skein-val': item.code.toLowerCase()
 	});
